@@ -76,6 +76,7 @@ async function addMoreEmployees() {
 };
 // constructor for input parameters with async function to add new employees
 // using switch with case blocks for reuse values, instead of multiple if statements
+// push employees into roster aray with answers from inquirer prompt
 async function createRoster() {
     try {
         const answers = await inquirer.prompt(questionsForEmployees);
