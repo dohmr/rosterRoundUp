@@ -10,9 +10,11 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-
-const questionsForEmployees = [ {
-    type:"input",
+// empty array of employees
+let roster = [];
+// initial questions from inquirer
+const questionsForEmployees = [{
+    type: "input",
     message: "What is your employees name?",
     name: "name"
 },
@@ -33,34 +35,111 @@ const questionsForEmployees = [ {
     choices: ["Manager", "Engineer", "Intern"]
 },
 ];
+// questions depending on the selection of role...
+const forEngineer = {
+    type: "input",
+    message: "What is the employees Github username?",
+    name: "github"
+};
+
+const forIntern = {
+    type: "input",
+    message: "What is the employees school name?",
+    name: "school"
+};
+
+const forManager = {
+    type: "input",
+    message: "What is their Office number?",
+    name: "officeNumber"
+};
+
+const moreEmployees = {
+    type: "confirm",
+    message: "Add more Employees?",
+    name: "addMore",
+    default: false
+};
+
+// async functions. create team. add employees to team array?
+
+async function addMoreEmployees() {
+    try {
+        const waitMore = await inquirer.prompt(moreEmployees);
+        if (waitMore.addMore) {
+            await createRoster();
+        }
+        return roster;
+    } catch (err) {
+        console.log(err);
+    };
+};
+// constructor for input parameters with async function to add new employees
+// using switch with case blocks for reuse values, instead of multiple if statements
+async function createRoster() {
+    try {
+        const answers = await inquirer.prompt(questionsForEmployees);
+        const { name, id, email } = answers;
+        switch (answers.role) {
+
+            case "Manager":
+                try {
+                    const managerAnswers = await inquirer.prompt(forManager);
+                    const { officeNumber } = managerAnswers;
+                    let manager = new Manager(name, id, email, officeNumber);
+                    roster.push(manager);
+                    await addMoreEmployees();
+                } catch (err) {
+                    console.log("Manager error");
+                }
+                break;
+
+            case "Engineer":
+                try {
+                    const engineerAnswers = await inquirer.prompt(forEngineer);
+                    const { github } = engineerAnswers;
+                    let engineer = new Engineer(name, id, email, github);
+                    roster.push(engineer);
+                    await addMoreEmployees();
+                } catch (err) {
+                    console.log("Engineer error");
+                }
+                break;
+
+            case "Intern":
+                try {
+                    const internAnswers = await inquirer.prompt(forIntern);
+                    const { school } = internAnswers;
+                    let intern = new Intern(name, id, email, school);
+                    roster.push(intern);
+                    await addMoreEmployees();
+                } catch (err) {
+                    console.log("Intern error");
+                }
+                break;
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
 
 
+// write file html in 'output'. outputPath.
+async function createHTML(){
+    await createRoster();
 
+// for new file, check if existing folder 'output', if not, create... 
+// existsSync looks for existing file
+    if (!fs.existsSync("./output")) {
+        // mkdirSync creates a directory, synchronously
+        fs.mkdirSync("./output");
+    }
+    // using outputpath, reads current directory location for output
+    fs.writeFile(outputPath, render(roster), error => {
+        if (error) throw error;
+        console.log("Roster is complete!")
 
+    });
+};
 
-
-
-
-
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
-
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
-
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
-
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
-
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```
+createHTML();
