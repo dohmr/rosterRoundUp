@@ -28,6 +28,8 @@ Testing:
 
 ![tests](assets/tests.png)
 
+Link to a Walk-through , here : [App. Walk-Through](https://drive.google.com/file/d/1lC8lBn6KWqsFPNQgw9M6sbeoEKWqDI5J/view?usp=sharing)
+
 ## Questions
 
 [Shawn Yandall : LinkedIn](https://www.linkedin.com/in/shawn.yandall/)
