@@ -6,7 +6,7 @@ const path = require("path");
 const fs = require("fs");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
-const outputPath = path.join(OUTPUT_DIR, "team.html");
+const outputPath = path.join(OUTPUT_DIR, "roster.html");
 
 const render = require("./lib/htmlRenderer");
 
@@ -80,6 +80,7 @@ async function createRoster() {
     try {
         const answers = await inquirer.prompt(questionsForEmployees);
         const { name, id, email } = answers;
+
         switch (answers.role) {
 
             case "Manager":
