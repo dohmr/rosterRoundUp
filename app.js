@@ -65,6 +65,7 @@ const moreEmployees = {
 
 async function addMoreEmployees() {
     try {
+        // wait for prompt to be finished
         const waitMore = await inquirer.prompt(moreEmployees);
         if (waitMore.addMore) {
             await createRoster();
@@ -81,9 +82,10 @@ async function createRoster() {
     try {
         const answers = await inquirer.prompt(questionsForEmployees);
         const { name, id, email } = answers;
+        //constructor
 
         switch (answers.role) {
-
+            // case for role
             case "Manager":
                 try {
                     const managerAnswers = await inquirer.prompt(forManager);
@@ -95,6 +97,7 @@ async function createRoster() {
                     console.log("Manager error");
                 }
                 break;
+                // break ends this case block
 
             case "Engineer":
                 try {
